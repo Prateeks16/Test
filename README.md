@@ -14,8 +14,24 @@ screenshot/PDF, this reads the code automatically — no manual typing.
 
 ## Setup
 
+### Windows
+
+1. Download and run the **Tesseract installer** from the UB Mannheim build:
+   https://github.com/UB-Mannheim/tesseract/wiki
+   (accept the default install path — the script detects it automatically)
+
+2. Install Python dependencies:
+   ```cmd
+   pip install -r requirements.txt
+   ```
+
+### Linux / macOS
+
 ```bash
-# System dependency (OCR engine)
+# macOS
+brew install tesseract
+
+# Ubuntu / Debian
 sudo apt-get install -y tesseract-ocr
 
 # Python dependencies

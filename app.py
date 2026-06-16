@@ -56,8 +56,17 @@ def extract():
                 x, y, w, h = crop
                 img = img.crop((x, y, x + w, y + h))
             otp = find_otp_in_image(img)
-    except Exception as e:  # noqa: BLE001 - surface any decode/OCR error to the UI
-        return jsonify(error=f"Could not process file: {e}"), 500
+    except Exception as e:
+        msg = str(e)
+        if "tesseract" in msg.lower() or "not installed" in msg.lower():
+            msg = (
+                "Tesseract OCR is not installed or not found. "
+                "Windows: download the installer from "
+                "https://github.com/UB-Mannheim/tesseract/wiki "
+                "and install it, then restart the server. "
+                "Linux: sudo apt-get install -y tesseract-ocr"
+            )
+        return jsonify(error=msg), 500
 
     if otp:
         return jsonify(otp=otp)

@@ -22,6 +22,17 @@ import numpy as np
 import pytesseract
 from PIL import Image
 
+# Auto-detect Tesseract on Windows (default install locations)
+if sys.platform == "win32":
+    _win_candidates = [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+    ]
+    for _p in _win_candidates:
+        if Path(_p).exists():
+            pytesseract.pytesseract.tesseract_cmd = _p
+            break
+
 DIGIT_RE = re.compile(r"^\d{4,8}$")
 LABEL_RE = re.compile(r"OTP|CODE|PASS|VERIF|PIN", re.IGNORECASE)
 
