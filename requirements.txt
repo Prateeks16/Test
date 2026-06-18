@@ -3,3 +3,5 @@ pytesseract>=0.3.10
 PyMuPDF>=1.23
 opencv-python-headless>=4.8
 Flask>=3.0
+flask-cors>=4.0
+gunicorn>=21.2

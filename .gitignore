@@ -4,3 +4,11 @@ __pycache__/
 venv/
 *.egg-info/
 .DS_Store
+
+# Local IDE / agent config
+.claude/
+
+# Generated artifacts (not source)
+data/
+*.log
+graphify-out/

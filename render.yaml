@@ -1,0 +1,9 @@
+# Render blueprint — deploy the OTP Extractor API as a Docker web service.
+# In Render: New > Blueprint, point at this repo. Free plan; cold-starts on idle.
+services:
+  - type: web
+    name: otp-extractor-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true

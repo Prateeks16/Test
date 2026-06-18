@@ -14,25 +14,13 @@ screenshot/PDF, this reads the code automatically — no manual typing.
 
 ## Setup
 
-### Windows
-
-1. Download and run the **Tesseract installer** from the UB Mannheim build:
-   https://github.com/UB-Mannheim/tesseract/wiki
-   (accept the default install path — the script detects it automatically)
-
-2. Install Python dependencies:
-   ```cmd
-   pip install -r requirements.txt
-   ```
-
-### Linux / macOS
-
 ```bash
-# macOS
-brew install tesseract
-
-# Ubuntu / Debian
-sudo apt-get install -y tesseract-ocr
+# System dependency (OCR engine)
+sudo apt-get install -y tesseract-ocr          # Linux
+# macOS:   brew install tesseract
+# Windows: install the UB Mannheim build, then either add its folder to PATH
+#          or set TESSERACT_CMD to the tesseract.exe path. By default the app
+#          auto-detects C:\Program Files\Tesseract-OCR\tesseract.exe.
 
 # Python dependencies
 pip install -r requirements.txt
@@ -73,8 +61,30 @@ python app.py
 
 ```
 extract_otp.py        Core extraction logic + CLI
-app.py                Flask web UI
-templates/index.html  Front-end
+app.py                Flask app (/extract, /inspect) + static hosting
+static/               Dashboard frontend (index.html, styles.css, app.js, config.js)
+benchmark_accuracy.py Accuracy harness (needs a local data/ folder of test images)
 tests/fixtures/       Sample OTP image and Gmail PDF
-docs/ui_preview.png   UI screenshot
+Dockerfile            Backend image (bundles the Tesseract binary)
+render.yaml           Render blueprint (Docker web service)
+vercel.json           Vercel static-frontend config
 ```
+
+## Deploy
+
+The backend needs the **Tesseract binary** + OpenCV libs, so it ships as a
+Docker image. Frontend is plain static files.
+
+**Backend → Render (Docker):**
+1. Push this repo to GitHub.
+2. Render → New → Blueprint → select the repo (`render.yaml` is detected).
+3. Deploy. Note the URL, e.g. `https://otp-extractor-api.onrender.com`.
+
+**Frontend → Vercel (static):**
+1. Vercel → New Project → import the repo; set **Root Directory** to `static`.
+2. Edit `static/config.js` → set `apiBase` to your Render URL (so the UI calls
+   the backend cross-origin; CORS is already enabled for `/extract` and `/inspect`).
+3. Deploy.
+
+To run the whole thing from one host, deploy only the Render service and leave
+`apiBase` as `""` — Render serves the frontend too.
