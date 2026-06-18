@@ -1,0 +1,24 @@
+name: keep-alive
+
+# Render's free tier spins the service down after ~15 min idle (cold start ~50s
+# on the next hit). This pings it every 10 min to keep it warm.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render
+        run: |
+          URL="https://otp-extractor-api.onrender.com/"
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 90 "$URL" || echo 000)
+            echo "attempt $i -> HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 20
+          done
+          echo "keep-alive ping failed after 3 attempts"
+          exit 1
